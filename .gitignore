@@ -1,0 +1,7 @@
+Claymore/.vs*
+*.csproj
+*.sln
+Claymore/Library/
+Claymore/Logs/
+Claymore/obj/
+Claymore/UserSettings/
