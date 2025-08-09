@@ -68,6 +68,7 @@ namespace Claymore {
 
 		// Input
 		bool isAttacking, isBlocking, isMoving, isLooking;
+
 		#endregion
 
 		#region Parameters/Getters
@@ -98,6 +99,8 @@ namespace Claymore {
 				}
 				return false;
 			} }
+
+		private ESwordEmbedState GetSwordEmbedState { get => claymoreObj.embedState; }
 		#endregion
 
 		#region Mono Implementation
@@ -378,7 +381,7 @@ namespace Claymore {
 		/// behaviour and dictate the actions the player can take afterwards.
 		/// </summary>
 		/// <param name="embedState">The embed state the sword is in, dictates possible behaviours.</param>
-		public void EmbedSwordSetup( ESwordEmbedState embedState ) {
+		public void EmbedSwordSetup( ) {
 			swordEmbeddedMovement = true;
 			travelTime = 0f;
 			startPos = transform.position;

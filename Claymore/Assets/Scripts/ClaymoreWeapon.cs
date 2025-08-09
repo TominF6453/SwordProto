@@ -73,28 +73,28 @@ namespace Claymore {
 			int collisionLayer = collision.collider.gameObject.layer;
 
 			// DEBUG
-			Debug.LogWarning( $"Contact point position: {collision.GetContact(0).point} vs sword position: {transform.position}" );
-			Debug.LogWarning( $"Contact point normal: {collision.GetContact( 0 ).normal}" );
-			Debug.LogWarning( $"How many contact points? {collision.contactCount}" );
+			//Debug.LogWarning( $"Contact point position: {collision.GetContact(0).point} vs sword position: {transform.position}" );
+			//Debug.LogWarning( $"Contact point normal: {collision.GetContact( 0 ).normal}" );
+			//Debug.LogWarning( $"How many contact points? {collision.contactCount}" );
 
 			switch (collisionLayer) {
 				case 6: // Floor geo
-					Debug.Log( "Hit floor geo." );
+					//Debug.Log( "Hit floor geo." );
 					embedState = ESwordEmbedState.Ground;
 					EmbedSword( collision.GetContact( 0 ).point , collision.GetContact( 0 ).normal , collision.transform );
 					break;
 				case 7: // Wall geo
-					Debug.Log( "Hit wall geo." );
+					//Debug.Log( "Hit wall geo." );
 					embedState = ESwordEmbedState.Wall;
 					EmbedSword( collision.GetContact( 0 ).point , collision.GetContact( 0 ).normal, collision.transform );
 					break;
 				case 10: // Ceiling geo
-					Debug.Log( "Hit ceiling geo." );
+					//Debug.Log( "Hit ceiling geo." );
 					embedState = ESwordEmbedState.Ceiling;
 					EmbedSword( collision.GetContact( 0 ).point , collision.GetContact( 0 ).normal , collision.transform );
 					break;
 				case 11: // Enemy
-					Debug.Log( "Hit enemy." );
+					//Debug.Log( "Hit enemy." );
 					embedState = ESwordEmbedState.Enemy;
 					EmbedSword( collision.GetContact( 0 ).point , collision.GetContact( 0 ).normal , collision.transform );
 					break;
@@ -156,7 +156,7 @@ namespace Claymore {
 			transform.forward = -worldNormal;
 
 			// We've embedded, player controller will do some sick movement.
-			parentPlayerController.EmbedSwordSetup( embedState );
+			parentPlayerController.EmbedSwordSetup();
 		}
 
 		public void ReleaseSword() {
