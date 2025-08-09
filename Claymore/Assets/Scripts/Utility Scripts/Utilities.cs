@@ -830,7 +830,7 @@ namespace Claymore {
 }
 
 #region Scene Referencing Utilties
-namespace WingsOfIcaria.SceneManagement {
+namespace Claymore.SceneManagement {
 	/// <summary>
 	/// Unity loads scenes at runtime either through index or absolute path. This makes managing scenes in Editor 
 	/// unintuitive, it would be more intuitive to reference scenes at Editor time using their .scene assets.
