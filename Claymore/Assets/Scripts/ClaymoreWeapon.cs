@@ -157,6 +157,9 @@ namespace Claymore {
 
 			// We've embedded, player controller will do some sick movement.
 			parentPlayerController.EmbedSwordSetup();
+
+			// Also move the VFX for slamming.
+			parentPlayerController.MoveSlamVFX( worldPoint , worldNormal );
 		}
 
 		public void ReleaseSword() {

@@ -298,6 +298,7 @@ MonoBehaviour:
   claymoreObj: {fileID: 4259037094274085413}
   claymoreAnimator: {fileID: 7496653690348981219}
   sphereCastGroundTarget: {fileID: 4596606322677074507}
+  warpSlamVFXPrefab: {fileID: 7244510678336203352, guid: a39061fbbad8d484a900bd89116084b5, type: 3}
   primaryAttackAction: {fileID: 1120369429361536294, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   altAttackAction: {fileID: -2591639705715527973, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   moveAction: {fileID: -1680190386980627800, guid: 35845fe01580c41289b024647b1d1c53, type: 3}

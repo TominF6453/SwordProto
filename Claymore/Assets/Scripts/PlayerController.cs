@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.VFX;
 
 namespace Claymore {
 	public class PlayerController : MonoBehaviour {
@@ -28,6 +29,8 @@ namespace Claymore {
 		[SerializeField] Animator claymoreAnimator;
 
 		[SerializeField] SphereCollider sphereCastGroundTarget;
+
+		[SerializeField] VisualEffect warpSlamVFXPrefab;
 
 		[Header("Input Action References")]
 		[SerializeField] InputActionReference primaryAttackAction;
@@ -65,6 +68,7 @@ namespace Claymore {
 		bool swordEmbeddedMovement = false;
 		Vector3 endPos, startPos;
 		float travelTime;
+		VisualEffect mostRecentVFX;
 
 		// Input
 		bool isAttacking, isBlocking, isMoving, isLooking;
@@ -371,8 +375,16 @@ namespace Claymore {
 				// Weapon.
 				claymoreObj.ReleaseSword();
 
+				// VFX.
+				if ( mostRecentVFX ) {
+					mostRecentVFX.SetFloat( "ParticleBlastScalar" , GetSwordEmbedState == ESwordEmbedState.Ground ? 2.5f : 1.4f );
+					mostRecentVFX.SetFloat( "ParticleBlastRadius" , 3.2f );
+					mostRecentVFX.Play();
+					Destroy( mostRecentVFX.gameObject , 6);
+				}
+
 				// TODO: Launch player/enable special actions.
-				
+
 			}
 		}
 
@@ -390,6 +402,21 @@ namespace Claymore {
 			claymoreAnimator.SetTrigger( WEAPON_EMBED );
 
 			// TODO: Different potential behaviours based on embed state.
+		}
+
+		/// <summary>
+		/// Instantiate and prep VFX for slamming to a desired position and rotation, called
+		/// from the sword when it has an impact point.
+		/// </summary>
+		/// <param name="position">The world position to move the vfx object to.</param>
+		/// <param name="newForward">The new forward direction to set for the vfx object.</param>
+		public void MoveSlamVFX( Vector3 position, Vector3 newForward ) {
+			if ( warpSlamVFXPrefab ) {
+				mostRecentVFX = Instantiate( warpSlamVFXPrefab , position , Quaternion.LookRotation( newForward ) );
+				mostRecentVFX.SetFloat( "ParticleBlastScalar" , GetSwordEmbedState == ESwordEmbedState.Ground ? 1.5f : 0.6f );
+				mostRecentVFX.SetFloat( "ParticleBlastRadius" , .8f );
+				mostRecentVFX.Play();
+			}
 		}
 		#endregion
 
