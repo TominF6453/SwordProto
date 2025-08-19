@@ -97,7 +97,7 @@ namespace Claymore {
 
 		private bool IsGrounded { get {
 				if ( Physics.SphereCast(transform.position, sphereCastGroundTarget.radius, Vector3.down,
-						out RaycastHit info, Vector3.Distance( transform.position, sphereCastGroundTarget.transform.position ), 1 << 6)) {
+						out RaycastHit info, Vector3.Distance( transform.position, sphereCastGroundTarget.transform.position ), 1 << 7)) {
 					// TODO: Do we need to check for anything else? Ground material or something?
 					return true;
 				}

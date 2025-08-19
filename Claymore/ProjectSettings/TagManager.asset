@@ -11,11 +11,11 @@ TagManager:
   - 
   - Water
   - UI
-  - LevelGeometryFloor
-  - LevelGeometryWall
+  - 
+  - LevelGeometryGrabbable
   - Player
   - PlayerHurtbox
-  - LevelGeometryCeiling
+  - 
   - Enemy
   - 
   - 
