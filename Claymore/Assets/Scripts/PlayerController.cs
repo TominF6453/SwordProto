@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
+using UnityEngine.UI;
 
 namespace Claymore {
 	public class PlayerController : MonoBehaviour {
@@ -32,6 +33,8 @@ namespace Claymore {
 
 		[SerializeField] VisualEffect warpSlamVFXPrefab;
 
+		[SerializeField] Image comboTimerUI;
+
 		[Header("Input Action References")]
 		[SerializeField] InputActionReference primaryAttackAction;
 		[SerializeField] InputActionReference altAttackAction;
@@ -47,6 +50,7 @@ namespace Claymore {
 		[SerializeField] float maxSpeed;
 		[SerializeField] float jumpForce;
 		[SerializeField] float airAccelScalar;
+		[SerializeField] float comboTimer = .5f;
 
 		[SerializeField] float cameraMaxPitchDegrees = 85;
 
@@ -69,6 +73,8 @@ namespace Claymore {
 		Vector3 endPos, startPos;
 		float travelTime;
 		VisualEffect mostRecentVFX;
+
+		float embedComboTime = 0;
 
 		// Input
 		bool isAttacking, isBlocking, isMoving, isLooking;
@@ -132,11 +138,40 @@ namespace Claymore {
 				return;
 			}
 
+			// Special movement.
+			if ( embedComboTime >= 0 ) {
+				embedComboTime -= Time.fixedDeltaTime;
+
+				// Behaviour for attacking combo.
+				if ( isAttacking ) {
+					// TODO: Implement.
+				}
+
+				// Behaviour for jumping combo.
+				if ( willJump ) {
+					// TODO: Implement.
+				}
+
+				if ( embedComboTime < 0 ) {
+					// combo time reaches 0 naturally, reset sword.
+					// Animator.
+					claymoreAnimator.enabled = true;
+					claymoreAnimator.SetTrigger( WEAPON_RESET );
+
+					// Weapon.
+					claymoreObj.ReleaseSword();
+				}
+				return;
+			}
+
 			// Normal movement
 			DoMovement();
 		}
 
-		//private void Update() { }
+		private void Update() {
+			// UI update
+			comboTimerUI.fillAmount = embedComboTime / comboTimer;
+		}
 
 		private void OnDestroy() {
 			// Input handling
@@ -156,7 +191,7 @@ namespace Claymore {
 			if ( claymoreAnimator ) {
 				// Check if we're already blocking, because then we throw instead of attack.
 				if ( isBlocking ) {
-					claymoreAnimator.SetTrigger( WEAPON_THROW );
+					claymoreAnimator.SetBool( WEAPON_THROW , isAttacking );
 				} else {
 					claymoreAnimator.SetBool( WEAPON_ATTACKING , isAttacking );
 				}
@@ -170,6 +205,7 @@ namespace Claymore {
 
 			// Animator trigger.
 			if ( claymoreAnimator ) {
+				claymoreAnimator.SetBool( WEAPON_THROW , isAttacking );
 				claymoreAnimator.SetBool( WEAPON_ATTACKING , isAttacking );
 			}
 		}
@@ -353,7 +389,9 @@ namespace Claymore {
 			// This is in fixed update so
 			travelTime += Time.fixedDeltaTime;
 
-			Vector3 nextFramePos = Vector3.Lerp( startPos, claymoreObj.transform.position, warpPositionCurve.Evaluate(travelTime + Time.fixedDeltaTime ) );
+			Vector3 targetPosition = claymoreObj.transform.position + 0.5f * ( transform.position - claymoreObj.transform.position);
+
+			Vector3 nextFramePos = Vector3.Lerp( startPos, targetPosition, warpPositionCurve.Evaluate(travelTime + Time.fixedDeltaTime ) );
 
 			//rbody.linearVelocity = Vector3.zero;
 			//rbody.MovePosition( Vector3.Lerp(startPos, claymoreObj.transform.position, warpPositionCurve.Evaluate(travelTime) ) );
@@ -368,13 +406,6 @@ namespace Claymore {
 				rbody.isKinematic = false;
 				rbody.linearVelocity = Vector3.zero;
 
-				// Animator.
-				claymoreAnimator.enabled = true;
-				claymoreAnimator.SetTrigger( WEAPON_RESET );
-
-				// Weapon.
-				claymoreObj.ReleaseSword();
-
 				// VFX.
 				if ( mostRecentVFX ) {
 					mostRecentVFX.SetFloat( "ParticleBlastScalar" , GetSwordEmbedState == ESwordEmbedState.Ground ? 8f : 1.4f );
@@ -383,8 +414,8 @@ namespace Claymore {
 					Destroy( mostRecentVFX.gameObject , 6);
 				}
 
-				// TODO: Launch player/enable special actions.
-
+				// Launch player/enable special actions.
+				embedComboTime = comboTimer;
 			}
 		}
 
