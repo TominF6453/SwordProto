@@ -78,24 +78,14 @@ namespace Claymore {
 			//Debug.LogWarning( $"How many contact points? {collision.contactCount}" );
 
 			switch (collisionLayer) {
-				case 6: // Floor geo
-					//Debug.Log( "Hit floor geo." );
-					embedState = ESwordEmbedState.Ground;
-					EmbedSword( collision.GetContact( 0 ).point , collision.GetContact( 0 ).normal , collision.transform );
-					break;
 				case 7: // Wall geo
-					//Debug.Log( "Hit wall geo." );
-					embedState = ESwordEmbedState.Wall;
+						//Debug.Log( "Hit wall geo." );
+					SetEmbedState( Vector3.Angle( Vector3.down, collision.GetContact(0).normal), false );
 					EmbedSword( collision.GetContact( 0 ).point , collision.GetContact( 0 ).normal, collision.transform );
 					break;
-				case 10: // Ceiling geo
-					//Debug.Log( "Hit ceiling geo." );
-					embedState = ESwordEmbedState.Ceiling;
-					EmbedSword( collision.GetContact( 0 ).point , collision.GetContact( 0 ).normal , collision.transform );
-					break;
 				case 11: // Enemy
-					//Debug.Log( "Hit enemy." );
-					embedState = ESwordEmbedState.Enemy;
+						 //Debug.Log( "Hit enemy." );
+					SetEmbedState( Vector3.Angle( Vector3.down , collision.GetContact( 0 ).normal ) , true );
 					EmbedSword( collision.GetContact( 0 ).point , collision.GetContact( 0 ).normal , collision.transform );
 					break;
 			}
@@ -140,6 +130,32 @@ namespace Claymore {
         #endregion
 
         #region Helpers
+
+		/// <summary>
+		/// Set the sword embed state by checking the angle vs Vector3.Down. Low angles -> hitting ceiling
+		/// (normal pointing downwards), medium angles -> hitting wall, ~180 angle -> hitting floor.
+		/// Ignore the calculation if hitting any enemy, special case.
+		/// </summary>
+		/// <param name="normalAngle"></param>
+		/// <param name="hitEnemy"></param>
+		private void SetEmbedState(float normalAngle, bool hitEnemy) {
+			if ( hitEnemy ) {
+				embedState = ESwordEmbedState.Enemy;
+				return;
+			}
+
+			switch ( normalAngle ) {
+				case <= 45: // ceiling
+					embedState = ESwordEmbedState.Ceiling;
+					return;
+				case >= 135: // floor
+					embedState = ESwordEmbedState.Ground;
+					return;
+				default: // wall
+					embedState = ESwordEmbedState.Wall;
+					return;
+			}
+		}
 
 		private void EmbedSword( Vector3 worldPoint, Vector3 worldNormal, Transform hitObject ) {
 			// We are embedded.
