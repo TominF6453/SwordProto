@@ -377,7 +377,7 @@ namespace Claymore {
 
 				// VFX.
 				if ( mostRecentVFX ) {
-					mostRecentVFX.SetFloat( "ParticleBlastScalar" , GetSwordEmbedState == ESwordEmbedState.Ground ? 2.5f : 1.4f );
+					mostRecentVFX.SetFloat( "ParticleBlastScalar" , GetSwordEmbedState == ESwordEmbedState.Ground ? 8f : 1.4f );
 					mostRecentVFX.SetFloat( "ParticleBlastRadius" , 3.2f );
 					mostRecentVFX.Play();
 					Destroy( mostRecentVFX.gameObject , 6);
@@ -413,7 +413,7 @@ namespace Claymore {
 		public void MoveSlamVFX( Vector3 position, Vector3 newForward ) {
 			if ( warpSlamVFXPrefab ) {
 				mostRecentVFX = Instantiate( warpSlamVFXPrefab , position , Quaternion.LookRotation( newForward ) );
-				mostRecentVFX.SetFloat( "ParticleBlastScalar" , GetSwordEmbedState == ESwordEmbedState.Ground ? 1.5f : 0.6f );
+				mostRecentVFX.SetFloat( "ParticleBlastScalar" , GetSwordEmbedState == ESwordEmbedState.Ground ? 4f : 0.6f );
 				mostRecentVFX.SetFloat( "ParticleBlastRadius" , .8f );
 				mostRecentVFX.Play();
 			}
