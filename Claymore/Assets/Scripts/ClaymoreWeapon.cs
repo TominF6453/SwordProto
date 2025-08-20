@@ -36,10 +36,15 @@ namespace Claymore {
 		Quaternion storedThrowRot;
 		float embedDistance;
 
+		Vector3 lastEmbedPosition;
+		Vector3 lastEmbedNormal;
+
 		public ESwordEmbedState embedState;
 		#endregion
 
 		#region Parameters/Getters
+
+		public (Vector3, Vector3) GetLastEmbedData { get => (lastEmbedPosition, lastEmbedNormal); }
 		#endregion
 
 		#region Mono Implementation
@@ -170,6 +175,10 @@ namespace Claymore {
 			// Set position and rotation.
 			transform.position = worldPoint + (embedDistance * worldNormal);
 			transform.forward = -worldNormal;
+
+			// Store local vals.
+			lastEmbedNormal = worldNormal;
+			lastEmbedPosition = worldPoint;
 
 			// We've embedded, player controller will do some sick movement.
 			parentPlayerController.EmbedSwordSetup();

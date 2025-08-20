@@ -52,6 +52,10 @@ namespace Claymore {
 		[SerializeField] float airAccelScalar;
 		[SerializeField] float comboTimer = .5f;
 
+		[SerializeField] float comboWallJumpForce = 7f;
+		[SerializeField] float comboGroundJumpForce = 9f;
+		[SerializeField] float comboEnemyJumpForce = 5f;
+
 		[SerializeField] float cameraMaxPitchDegrees = 85;
 
 		[SerializeField] Vector3 playerGravityAccel = new(0, -5, 0);
@@ -142,14 +146,31 @@ namespace Claymore {
 			if ( embedComboTime >= 0 ) {
 				embedComboTime -= Time.fixedDeltaTime;
 
-				// Behaviour for attacking combo.
 				if ( isAttacking ) {
+					// Behaviour for attacking combo.
 					// TODO: Implement.
-				}
+				} else if ( willJump ) {
+					// Behaviour for jumping combo.
+					// TODO: Implement.
+					embedComboTime = 0;
 
-				// Behaviour for jumping combo.
-				if ( willJump ) {
-					// TODO: Implement.
+					switch ( GetSwordEmbedState ) {
+						case ESwordEmbedState.Wall:
+							rbody.linearVelocity = comboWallJumpForce * (Vector3.up + claymoreObj.GetLastEmbedData.Item2);
+							break;
+							
+						case ESwordEmbedState.Ground:
+							rbody.linearVelocity = comboGroundJumpForce * (Vector3.up + FlattenedCameraForward);
+							break;
+
+						case ESwordEmbedState.Enemy:
+							rbody.linearVelocity = comboEnemyJumpForce * Vector3.up;
+							break;
+
+						case ESwordEmbedState.Ceiling:
+						default:
+							break;
+					}
 				}
 
 				if ( embedComboTime < 0 ) {
