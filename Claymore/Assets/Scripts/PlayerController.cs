@@ -15,6 +15,8 @@ namespace Claymore {
 		const string WEAPON_THROW = "Throw";
 		const string WEAPON_RESET = "ReturnSword";
 		const string WEAPON_EMBED = "Embed";
+		const string WEAPON_DASH = "Dash";
+		const string WEAPON_SPIN = "Spin";
 
 		// Input stuff
 		const float BASE_CAM_SENSITIVITY = 0.1f;
@@ -52,6 +54,7 @@ namespace Claymore {
 		[SerializeField] float airAccelScalar;
 		[SerializeField] float comboTimer = .5f;
 
+		[SerializeField] float comboSwordDashForce = 7f;
 		[SerializeField] float comboWallJumpForce = 7f;
 		[SerializeField] float comboGroundJumpForce = 9f;
 		[SerializeField] float comboEnemyJumpForce = 5f;
@@ -148,19 +151,51 @@ namespace Claymore {
 
 				if ( isAttacking ) {
 					// Behaviour for attacking combo.
-					// TODO: Implement.
+					// Animator.
+					claymoreAnimator.enabled = true;
+
+
+					switch ( GetSwordEmbedState ) {
+						case ESwordEmbedState.Wall:
+							rbody.linearVelocity = comboSwordDashForce * cameraParent.transform.forward;
+							claymoreAnimator.SetTrigger( WEAPON_DASH );
+							break;
+
+						case ESwordEmbedState.Ground:
+							claymoreAnimator.SetTrigger( WEAPON_SPIN );
+							break;
+
+						case ESwordEmbedState.Enemy:
+							rbody.linearVelocity = comboSwordDashForce * cameraParent.transform.forward;
+							claymoreAnimator.SetTrigger( WEAPON_DASH );
+							break;
+
+						case ESwordEmbedState.Ceiling:
+							rbody.linearVelocity = comboSwordDashForce * cameraParent.transform.forward;
+							claymoreAnimator.SetTrigger( WEAPON_DASH );
+							break;
+
+						default:
+							break;
+					}
+
+					// Weapon.
+					claymoreObj.ReleaseSword();
+					rbody.useGravity = true;
+					embedComboTime = 0;
+
+					return;
 				} else if ( willJump ) {
 					// Behaviour for jumping combo.
-					// TODO: Implement.
 					embedComboTime = 0;
 
 					switch ( GetSwordEmbedState ) {
 						case ESwordEmbedState.Wall:
-							rbody.linearVelocity = comboWallJumpForce * (Vector3.up + claymoreObj.GetLastEmbedData.Item2);
+							rbody.linearVelocity = comboWallJumpForce * Utilities.AddAndNormalize( 2 * Vector3.up, claymoreObj.GetLastEmbedData.Item2);
 							break;
 							
 						case ESwordEmbedState.Ground:
-							rbody.linearVelocity = comboGroundJumpForce * (Vector3.up + FlattenedCameraForward);
+							rbody.linearVelocity = comboGroundJumpForce * Utilities.AddAndNormalize( Vector3.up, FlattenedCameraForward);
 							break;
 
 						case ESwordEmbedState.Enemy:
