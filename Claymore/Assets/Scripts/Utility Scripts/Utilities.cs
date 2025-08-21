@@ -433,6 +433,16 @@ namespace Claymore {
 		public static Vector3 DirectionTo( this Transform transform , Vector3 target ) {
 			return (target - transform.position).normalized;
 		}
+
+		/// <summary>Add a set of Vector3s and return the normalized result.</summary>
+		/// <param name="vectors">All the vectors you wish to add together.</param>
+		/// <returns>The normalized result of the sum of all provided vectors.</returns>
+		public static Vector3 AddAndNormalize( params Vector3[] vectors ) {
+			Vector3 result = new();
+			foreach ( Vector3 v in vectors ) result += v;
+			result.Normalize();
+			return result;
+		}
 	}
 	#endregion
 
